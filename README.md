@@ -1,4 +1,4 @@
-# 🎓 Đồ Án Tốt Nghiệp: Xây dựng website bán nông sản tích hợp AI dự báo nhu cầu tiêu thụ
+# Website bán nông sản tích hợp AI dự báo nhu cầu tiêu thụ
 
 Hệ thống e-commerce bán nông sản sạch theo combo, tích hợp thanh toán qua **cổng VNPay & COD**, cùng tính năng dự báo lượng bán và đề xuất nhập kho thông minh sử dụng trí tuệ nhân tạo (AI).
 
@@ -16,8 +16,8 @@ Hệ thống e-commerce bán nông sản sạch theo combo, tích hợp thanh to
 ## 🚀 Khởi Chạy Nhanh
 
 ### 1. Cơ Sở Dữ Liệu
-1. Tạo database `FreshFarmDb` trong **SQL Server**.
-2. Chạy duy nhất file script `/database/database_setup.sql` để khởi tạo cả cấu trúc bảng và dữ liệu mẫu.
+1. Tạo database trống trong **SQL Server**.
+2. Chạy tệp tin script `/database/database_setup.sql` để khởi tạo cấu trúc bảng.
 
 ### 2. Chạy Backend (API)
 1. Cấu hình chuỗi kết nối SQL Server trong `/backend/DOAN4/appsettings.json`.
@@ -32,9 +32,3 @@ Hệ thống e-commerce bán nông sản sạch theo combo, tích hợp thanh to
    npm install
    npm run dev
    ```
-
----
-
-## 📝 Thông Tin Đồ Án
-*   **Đề tài:** Xây dựng website bán nông sản tích hợp AI dự báo nhu cầu tiêu thụ
-*   **Sinh viên thực hiện:** Lộc Thị Bích Hiên

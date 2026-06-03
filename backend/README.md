@@ -1,6 +1,6 @@
 # 🖥️ Fresh Farm Backend API
 
-Dự án API Backend cho đồ án tốt nghiệp: **Xây dựng website bán nông sản tích hợp AI dự báo nhu cầu tiêu thụ**, được thiết kế theo **Kiến trúc 3 lớp (Three-Layer Architecture)**:
+Dự án API Backend cho hệ thống: **Xây dựng website bán nông sản tích hợp AI dự báo nhu cầu tiêu thụ**, được thiết kế theo **Kiến trúc 3 lớp (Three-Layer Architecture)**:
 1.  **Presentation Layer (Controllers):** Tiếp nhận các yêu cầu HTTP từ client.
 2.  **Business Logic Layer (Services):** Xử lý toàn bộ logic nghiệp vụ của dự án.
 3.  **Data Access Layer (Repositories & EF Core):** Giao tiếp trực tiếp và truy vấn CSDL SQL Server.
