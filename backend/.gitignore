@@ -1,0 +1,19 @@
+## Ignore Visual Studio temporary files, build results, and user settings
+.vs/
+[Bb]in/
+[Oo]bj/
+[Pp]ublish/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Ignore zip archives
+*.zip
+
+## Ignore environment files
+appsettings.Development.json
+
+## Ignore database logs/temporary files if any
+*.ldf
+*.mdf

@@ -1,0 +1,26 @@
+# ====================================================================
+# DOANTN Root .gitignore
+# Excludes temporary and build files from both backend and frontend.
+# ====================================================================
+
+# --- BACKEND (.NET Core) ---
+backend/DOAN4/.vs/
+backend/DOAN4/bin/
+backend/DOAN4/obj/
+backend/publish/
+backend/*.user
+backend/*.zip
+backend/DOAN4/Uploads/*
+!backend/DOAN4/Uploads/.gitkeep
+
+# --- FRONTEND (Vue.js / Node) ---
+frontend/node_modules/
+frontend/dist/
+frontend/.local
+frontend/.env.local
+frontend/.env.*.local
+
+# --- SYSTEM & OS FILES ---
+.DS_Store
+Thumbs.db
+*.log

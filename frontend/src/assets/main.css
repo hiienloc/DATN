@@ -1,0 +1,876 @@
+/* ============================================================
+   FreshFarm – Bootstrap 5 Custom Theme Overrides
+   ============================================================ */
+
+/* --- Google Font --- */
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap');
+
+/* --- Root Scale --- */
+html {
+  font-size: 14.5px !important; /* Phóng to nhẹ toàn bộ kích thước trang */
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (min-width: 1200px) {
+  .container-xl {
+    max-width: 1320px !important;
+  }
+}
+
+body {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  color: #1f2937;
+  background-color: #f8fafc;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   Bootstrap Color Overrides – FreshFarm Green (Emerald)
+   ============================================================ */
+:root {
+  --bs-success:         #2E7D32; /* Xanh lá đậm (trust, organic) */
+  --bs-success-rgb:     46, 125, 50;
+  --bs-success-text:    #1b5e20; /* Darker green for legible success text */
+  --bs-success-bg-subtle:   #e8f5e9; /* Xanh nhạt (background nhẹ) */
+  --bs-success-border-subtle: #c8e6c9;
+
+  /* FreshFarm custom tokens */
+  --ff-green:           #2E7D32; /* Primary */
+  --ff-green-dark:      #1b5e20;
+  --ff-green-light:     #81C784; /* Xanh nhạt (background nhẹ) */
+  --ff-green-xlight:    #e8f5e9;
+  --ff-sidebar-bg:      #faf5f0;
+  --ff-bg-admin:        #f1f8f3;
+  --ff-card-radius:     16px;
+
+  /* Pastel Peach accents */
+  --ff-peach:           #fbd3c0;
+  --ff-peach-light:     #fef5f1;
+  --ff-peach-dark:      #e5ad96;
+}
+
+/* Overwrite Bootstrap .btn-success & .bg-success */
+.btn-success {
+  --bs-btn-bg:               #4CAF50; /* Xanh lá tươi (CTA, button) */
+  --bs-btn-border-color:     #4CAF50;
+  --bs-btn-hover-bg:         #388E3C;
+  --bs-btn-hover-border-color: #388E3C;
+  --bs-btn-active-bg:        #2E7D32;
+  --bs-btn-disabled-bg:      #81C784;
+}
+
+.btn-outline-success {
+  --bs-btn-color:            #4CAF50;
+  --bs-btn-border-color:     #4CAF50;
+  --bs-btn-hover-bg:         #4CAF50;
+  --bs-btn-hover-border-color: #4CAF50;
+}
+
+.bg-success { background-color: rgba(46, 125, 50, var(--bs-bg-opacity, 1)) !important; }
+.text-success { color: var(--ff-green) !important; }
+.border-success { border-color: var(--ff-green) !important; }
+
+.badge.bg-success { background-color: var(--ff-green) !important; }
+
+/* Success alert in FreshFarm style */
+.alert-success {
+  --bs-alert-bg:            var(--ff-green-xlight);
+  --bs-alert-border-color:  var(--bs-success-border-subtle);
+  --bs-alert-color:         #1b5e20;
+}
+
+/* Form focus ring emerald */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--ff-green);
+  box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+}
+
+/* ============================================================
+   Admin Sidebar
+   ============================================================ */
+.ff-sidebar {
+  width: 200px;
+  background-color: var(--ff-sidebar-bg);
+  border-right: 1px solid #e5e7eb;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 1040;
+  display: flex;
+  flex-direction: column;
+}
+
+.ff-sidebar-logo {
+  padding: 1.25rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ff-admin-main {
+  margin-left: 200px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100vh;
+  flex: 1;
+}
+
+/* ============================================================
+   Nav Items (Admin sidebar)
+   ============================================================ */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 1rem;
+  margin: 0.125rem 0.5rem;
+  border-radius: 0.625rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: #6b7280;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  border: none;
+  background: none;
+  width: calc(100% - 1rem);
+  text-align: left;
+}
+
+.nav-item:hover {
+  background-color: var(--ff-green-xlight);
+  color: var(--ff-green);
+}
+
+.nav-item.active {
+  background-color: var(--ff-green-light);
+  color: var(--ff-green);
+  font-weight: 600;
+}
+
+/* ============================================================
+   Cards & Stat Cards
+   ============================================================ */
+.stat-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--ff-card-radius);
+  padding: 1.25rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ============================================================
+   Icon Buttons
+   ============================================================ */
+.btn-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.625rem;
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.btn-icon:hover {
+  background-color: #f9fafb;
+  color: #374151;
+}
+
+/* ============================================================
+   Status Pills
+   ============================================================ */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* ============================================================
+   FreshFarm Custom Utilities
+   ============================================================ */
+
+/* Rounded variants beyond Bootstrap */
+.rounded-xl  { border-radius: 0.75rem !important; }
+.rounded-2xl { border-radius: 1rem !important; }
+.rounded-3xl { border-radius: 1.5rem !important; }
+
+/* Spacing shims */
+.gap-1  { gap: 0.25rem !important; }
+.gap-2  { gap: 0.5rem !important; }
+.gap-3  { gap: 0.75rem !important; }
+.gap-4  { gap: 1rem !important; }
+.gap-5  { gap: 1.25rem !important; }
+.gap-6  { gap: 1.5rem !important; }
+
+/* Min height helpers */
+.min-vh-screen { min-height: 100vh; }
+
+/* Truncate */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Line clamp */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Object fit */
+.object-cover { object-fit: cover; }
+
+/* Backdrop blur */
+.backdrop-blur-sm { backdrop-filter: blur(4px); }
+.backdrop-blur-md { backdrop-filter: blur(8px); }
+
+/* Spin animation */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.animate-spin { animation: spin 1s linear infinite; }
+
+/* Pulse animation */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+.animate-pulse { animation: pulse 2s ease-in-out infinite; }
+
+/* Scale on hover */
+.hover-scale:hover { transform: scale(1.05); }
+
+/* Shadow emerald */
+.shadow-success { box-shadow: 0 4px 14px rgba(78, 124, 102, 0.3) !important; }
+
+/* ============================================================
+   Admin Table Theming
+   ============================================================ */
+.ff-table thead th {
+  background-color: var(--ff-green-xlight);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.ff-table tbody tr:hover {
+  background-color: rgba(78, 124, 102, 0.04);
+}
+
+/* ============================================================
+   Customer Navbar
+   ============================================================ */
+.ff-navbar {
+  background: #2E7D32 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+.ff-navbar input::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+.ff-navbar input:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15) !important;
+}
+
+.ff-nav-link {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75) !important;
+  transition: color 0.15s;
+  text-decoration: none;
+  padding-bottom: 2px;
+}
+.ff-nav-link:hover,
+.ff-nav-link.active {
+  color: #ffffff !important;
+}
+.ff-nav-link.active {
+  border-bottom: 2px solid #c5ff6d !important;
+}
+
+/* Custom premium search bar */
+.ff-search-group {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  padding: 2px;
+  transition: all 0.25s ease;
+  width: 240px;
+}
+.ff-search-group:focus-within {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
+}
+.ff-search-input {
+  background: transparent !important;
+  border: none !important;
+  color: #ffffff !important;
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  width: 100%;
+}
+.ff-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+.ff-search-input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+.ff-search-btn {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ff-search-btn svg {
+  color: rgba(255, 255, 255, 0.8);
+  transition: color 0.2s;
+}
+.ff-search-btn:hover svg {
+  color: #ffffff;
+}
+
+/* Icon button hover effects */
+.ff-navbar-icon-btn {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  color: #ffffff !important;
+}
+.ff-navbar-icon-btn:hover {
+  transform: scale(1.08);
+  opacity: 0.95;
+}
+.ff-navbar-icon-btn:active {
+  transform: scale(0.95);
+}
+
+/* ============================================================
+   Hero Section
+   ============================================================ */
+.ff-hero {
+  position: relative;
+  overflow: hidden;
+}
+.ff-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(27, 94, 32, 0.65), rgba(27, 94, 32, 0.3), transparent);
+}
+.ff-hero img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ff-hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 3.5rem 1rem;
+}
+
+/* ============================================================
+   Product Cards
+   ============================================================ */
+.ff-product-card {
+  border-radius: 1.25rem !important;
+  border: 1px solid #f3f4f6;
+  transition: box-shadow 0.3s, transform 0.3s;
+  overflow: hidden;
+}
+.ff-product-card:hover {
+  box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+.ff-product-card .card-img-top {
+  height: 11rem;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+.ff-product-card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+/* ============================================================
+   Modal overlay (custom)
+   ============================================================ */
+.ff-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1055;
+  background: rgba(17,24,39,0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.ff-modal-box {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+  width: 100%;
+  max-width: 32rem;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ============================================================
+   Auth Pages
+   ============================================================ */
+.ff-auth-left {
+  background-color: #111;
+  position: relative;
+  overflow: hidden;
+}
+.ff-auth-left img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+}
+.ff-auth-left-content {
+  position: relative;
+  z-index: 1;
+  padding: 4rem;
+  color: white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 40%, transparent 70%);
+}
+
+/* ============================================================
+   Pagination (FreshFarm)
+   ============================================================ */
+.ff-page-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.ff-page-btn:hover { background: var(--ff-green-xlight); color: var(--ff-green); }
+.ff-page-btn.active {
+  background: var(--ff-green);
+  color: white;
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.35);
+  transform: scale(1.08);
+}
+.ff-page-btn:disabled { color: #d1d5db; cursor: not-allowed; }
+
+/* ============================================================
+   Premium UI Enhancements (Modernized & Elegant)
+   ============================================================ */
+
+/* Sleek Floating Features Bar */
+.ff-features-bar {
+  background: linear-gradient(135deg, #4CAF50 0%, var(--ff-green-dark) 100%);
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
+  margin-top: -45px;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 20px 40px rgba(46, 125, 50, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Beautiful curved hero for premium desktop app feel */
+.ff-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0px !important;
+  background: #111827;
+}
+
+/* modern glassy nav styling overrides */
+.ff-navbar {
+  background: #2E7D32 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  transition: all 0.3s ease;
+}
+
+/* Modern Premium Cards */
+.ff-modern-card {
+  background: #ffffff;
+  border: 1px solid rgba(228, 231, 235, 0.75) !important;
+  border-radius: 0 !important;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.02) !important;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ff-modern-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(78, 124, 102, 0.25) !important;
+  box-shadow: 0 20px 40px rgba(78, 124, 102, 0.08) !important;
+}
+
+.ff-card-img-wrapper {
+  height: 220px;
+  background-color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  border-bottom: 1px solid rgba(243, 244, 246, 0.7);
+}
+
+.ff-card-img-wrapper img {
+  object-fit: contain;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.ff-modern-card:hover .ff-card-img-wrapper img {
+  transform: scale(1.06);
+}
+
+.ff-badge-discount {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.25);
+  z-index: 2;
+  letter-spacing: 0.02em;
+}
+
+.ff-badge-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
+  z-index: 2;
+  letter-spacing: 0.02em;
+}
+
+.ff-card-brand-overlay {
+  position: absolute;
+  bottom: 8px;
+  left: 12px;
+  z-index: 2;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+.ff-card-brand-overlay img {
+  width: 16px;
+  height: 16px;
+  filter: hue-rotate(90deg);
+}
+
+.ff-card-body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.ff-card-title {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1f2937;
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 2.7rem;
+  transition: color 0.2s ease;
+}
+
+.ff-modern-card:hover .ff-card-title {
+  color: var(--ff-green);
+}
+
+.ff-card-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ff-price-discounted {
+  color: var(--ff-green);
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.ff-price-original {
+  color: #9ca3af;
+  text-decoration: line-through;
+  font-size: 0.8rem;
+  margin-left: 0.4rem;
+  font-weight: 400;
+}
+
+.ff-card-btn-add {
+  background-color: var(--ff-green);
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(78, 124, 102, 0.2);
+}
+
+.ff-card-btn-add:hover {
+  background-color: var(--ff-green-dark);
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(78, 124, 102, 0.3);
+}
+
+.ff-card-btn-add:active {
+  transform: scale(0.95);
+}
+
+/* Sliding Mobile Side Drawer */
+.ff-mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100vh;
+  background: white;
+  z-index: 1100;
+  box-shadow: 20px 0 40px rgba(0,0,0,0.1);
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.ff-mobile-drawer.open {
+  transform: translateX(0);
+}
+
+.ff-mobile-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1090;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.ff-mobile-drawer-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Custom modern form elements */
+.ff-search-input-modern {
+  border-radius: 9999px !important;
+  padding-left: 1.25rem !important;
+  border: 1px solid rgba(228, 231, 235, 0.8) !important;
+  background-color: rgba(249, 250, 251, 0.8) !important;
+  transition: all 0.2s ease;
+  font-size: 0.85rem !important;
+}
+
+.ff-search-input-modern:focus {
+  background-color: #ffffff !important;
+  border-color: var(--ff-green) !important;
+  box-shadow: 0 0 0 4px rgba(78, 124, 102, 0.1) !important;
+}
+
+.ff-sidebar,
+.ff-admin-main,
+.ff-modal-overlay,
+.ff-modal-box,
+.modal,
+.modal-dialog {
+  border-radius: 8px !important;
+}
+
+.ff-sidebar .card,
+.ff-admin-main .card,
+.ff-modal-box .card,
+.modal .modal-content {
+  border-radius: 8px !important;
+}
+
+.ff-sidebar .btn,
+.ff-admin-main .btn,
+.ff-modal-box .btn,
+.modal .btn {
+  border-radius: 8px !important;
+}
+
+.ff-sidebar input,
+.ff-sidebar select,
+.ff-admin-main input,
+.ff-admin-main select,
+.ff-modal-box input,
+.ff-modal-box select,
+.modal input,
+.modal select {
+  border-radius: 8px !important;
+}
+
+.spinner-border,
+.rounded-circle,
+.rounded-circle * {
+  border-radius: 50% !important;
+  border-top-left-radius: 50% !important;
+  border-top-right-radius: 50% !important;
+  border-bottom-left-radius: 50% !important;
+  border-bottom-right-radius: 50% !important;
+}
+
+.ff-admin-main table,
+.ff-admin-main thead,
+.ff-admin-main tbody,
+.ff-admin-main tr,
+.ff-admin-main th,
+.ff-admin-main td,
+.ff-modal-overlay table,
+.ff-modal-overlay thead,
+.ff-modal-overlay tbody,
+.ff-modal-overlay tr,
+.ff-modal-overlay th,
+.ff-modal-overlay td {
+  border-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+/* ============================================================
+   Admin Sidebar & Mobile Responsiveness
+   ============================================================ */
+.ff-sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1045;
+  transition: opacity 0.3s ease;
+  border-radius: 0 !important;
+}
+
+@media (max-width: 991.98px) {
+  .ff-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1050;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.15);
+  }
+  
+  .ff-sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .ff-admin-main {
+    margin-left: 0 !important;
+    width: 100%;
+  }
+
+  .btn-close-sidebar {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    z-index: 1060;
+  }
+}
+
+/* --- Admin Tables Responsive Scrolls --- */
+.ff-admin-main .bg-white.rounded-2.border.shadow-sm.overflow-hidden,
+.ff-admin-main .bg-white.rounded-4.border.shadow-sm.overflow-hidden,
+.ff-admin-main .table-container {
+  overflow-x: auto !important;
+  max-width: 100%;
+}
+
+.ff-admin-main table.table {
+  min-width: 800px;
+}
+
+/* --- Success opacity styles overrides --- */
+.bg-success.bg-opacity-10 {
+  background-color: rgba(94, 219, 116, 0.1) !important;
+}
+
+.btn-success.bg-opacity-10 {
+  background-color: rgba(94, 219, 116, 0.1) !important;
+  color: var(--ff-green) !important;
+  border: none !important;
+}
+
+.btn-success.bg-opacity-10:hover {
+  background-color: rgba(94, 219, 116, 0.2) !important;
+  color: var(--ff-green-dark) !important;
+}
+

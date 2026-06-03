@@ -1,0 +1,6 @@
+@DOAN4_HostAddress = http://localhost:5051
+
+GET {{DOAN4_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
