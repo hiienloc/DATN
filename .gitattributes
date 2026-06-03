@@ -1,0 +1,3 @@
+# Exclude SQL database scripts from GitHub language statistics
+database/* linguist-documentation=true
+*.sql linguist-documentation=true
