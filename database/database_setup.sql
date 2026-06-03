@@ -13,7 +13,7 @@ GO
 
 CREATE TABLE [Categories] (
     [CategoryId] int NOT NULL IDENTITY,
-    [CategoryName] nvarchar(50) NOT NULL,
+    [CategoryName] varchar(50) NOT NULL,
     [IsActive] bit NULL,
     CONSTRAINT [PK_Categories] PRIMARY KEY ([CategoryId])
 );
@@ -21,10 +21,10 @@ GO
 
 CREATE TABLE [Packages] (
     [PackageId] int NOT NULL IDENTITY,
-    [PackageCode] nvarchar(50) NOT NULL,
-    [PackageName] nvarchar(50) NOT NULL,
+    [PackageCode] varchar(50) NOT NULL,
+    [PackageName] varchar(50) NOT NULL,
     [ImageUrl] varchar(255) NULL,
-    [Description] nvarchar(255) NOT NULL,
+    [Description] varchar(255) NOT NULL,
     [Price] decimal(18,2) NOT NULL,
     [StartDate] datetime2 NULL,
     [EndDate] datetime2 NULL,
@@ -38,16 +38,16 @@ GO
 
 CREATE TABLE [Roles] (
     [RoleId] int NOT NULL IDENTITY,
-    [RoleName] nvarchar(20) NOT NULL,
+    [RoleName] varchar(20) NOT NULL,
     CONSTRAINT [PK_Roles] PRIMARY KEY ([RoleId])
 );
 GO
 
 CREATE TABLE [Products] (
     [ProductId] int NOT NULL IDENTITY,
-    [ProductCode] nvarchar(50) NOT NULL,
-    [ProductName] nvarchar(100) NOT NULL,
-    [Unit] nvarchar(50) NOT NULL,
+    [ProductCode] varchar(50) NOT NULL,
+    [ProductName] varchar(100) NOT NULL,
+    [Unit] varchar(50) NOT NULL,
     [IsActive] bit NULL,
     [CategoryId] int NULL,
     CONSTRAINT [PK_Products] PRIMARY KEY ([ProductId]),
@@ -57,7 +57,7 @@ GO
 
 CREATE TABLE [Users] (
     [UserId] int NOT NULL IDENTITY,
-    [FullName] nvarchar(100) NOT NULL,
+    [FullName] varchar(100) NOT NULL,
     [Email] varchar(100) NOT NULL,
     [Password] varchar(255) NOT NULL,
     [PhoneNumber] varchar(10) NOT NULL,
@@ -119,12 +119,12 @@ GO
 CREATE TABLE [Orders] (
     [OrderId] int NOT NULL IDENTITY,
     [OrderCode] varchar(50) NULL,
-    [ReceiveName] nvarchar(50) NOT NULL,
+    [ReceiveName] varchar(50) NOT NULL,
     [ReceivePhone] varchar(10) NOT NULL,
-    [ReceiveAddress] nvarchar(255) NOT NULL,
+    [ReceiveAddress] varchar(255) NOT NULL,
     [ShipmentPrice] decimal(18,2) NOT NULL,
     [OrderDate] datetime2 NULL,
-    [OrderStatus] nvarchar(50) NULL,
+    [OrderStatus] varchar(50) NULL,
     [TotalAmount] decimal(18,2) NULL,
     [UserId] int NULL,
     CONSTRAINT [PK_Orders] PRIMARY KEY ([OrderId]),
@@ -137,9 +137,9 @@ CREATE TABLE [InventoryTransactions] (
     [InventoryId] int NULL,
     [PackageId] int NULL,
     [QuantityChange] decimal(18,2) NOT NULL,
-    [Note] nvarchar(50) NOT NULL,
+    [Note] varchar(50) NOT NULL,
     [TransactionDate] datetime2 NULL,
-    [TransactionType] nvarchar(max) NOT NULL,
+    [TransactionType] varchar(max) NOT NULL,
     CONSTRAINT [PK_InventoryTransactions] PRIMARY KEY ([TransactionId]),
     CONSTRAINT [FK_InventoryTransactions_Inventories_InventoryId] FOREIGN KEY ([InventoryId]) REFERENCES [Inventories] ([InventoryId]) ON DELETE NO ACTION,
     CONSTRAINT [FK_InventoryTransactions_Packages_PackageId] FOREIGN KEY ([PackageId]) REFERENCES [Packages] ([PackageId]) ON DELETE SET NULL
