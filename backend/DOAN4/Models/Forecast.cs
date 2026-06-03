@@ -12,6 +12,7 @@ namespace DOAN4.Models
         public string ForecastType { get; set; } = string.Empty;
         public decimal AvgDailySales { get; set; }
         public decimal PredictQuantity { get; set; }
+        [Column("SuggestStock")]
         public decimal SuggestReStock {  get; set; }
         public decimal CurrentStock { get; set; }
         public DateTime ForecastDate { get; set; }
