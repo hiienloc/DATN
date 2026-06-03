@@ -12,7 +12,9 @@ Dự án API Backend cho hệ thống: **Xây dựng website bán nông sản t�
 *   Thanh toán qua **VNPay & COD**
 
 ## Cấu Hình & Khởi Chạy
-1. Cấu hình chuỗi kết nối Database tại file [appsettings.json](file:///c:/Users/locth/source/repos/DOANTN/backend/DOAN4/appsettings.json).
+1. Cấu hình các thông số tại file [appsettings.json](file:///c:/Users/locth/source/repos/DOANTN/backend/DOAN4/appsettings.json):
+   - **ConnectionStrings:DefaultConnection**: Chuỗi kết nối đến SQL Server của bạn.
+   - **Gemini:ApiKey**: Điền API Key của Gemini AI (lấy miễn phí từ Google AI Studio) để sử dụng tính năng dự báo.
 2. Chạy lệnh:
    ```bash
    dotnet run

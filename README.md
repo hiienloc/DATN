@@ -20,7 +20,9 @@ Hệ thống e-commerce bán nông sản sạch theo combo, tích hợp thanh to
 2. Chạy tệp tin script `/database/database_setup.sql` để khởi tạo cấu trúc bảng.
 
 ### 2. Chạy Backend (API)
-1. Cấu hình chuỗi kết nối SQL Server trong `/backend/DOAN4/appsettings.json`.
+1. Cấu hình thông tin trong `/backend/DOAN4/appsettings.json`:
+   * **Kết nối SQL Server:** Điền thông tin kết nối CSDL của bạn vào mục `ConnectionStrings:DefaultConnection`.
+   * **Cấu hình Gemini AI:** Lấy API Key miễn phí từ [Google AI Studio](https://aistudio.google.com/) và điền vào mục `"Gemini": { "ApiKey": "MÃ_API_KEY_CỦA_BẠN" }` để sử dụng tính năng dự báo thông minh bằng AI.
 2. Mở terminal tại `/backend/DOAN4` và chạy lệnh:
    ```bash
    dotnet run
