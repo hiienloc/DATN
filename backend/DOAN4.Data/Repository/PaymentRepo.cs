@@ -2,6 +2,7 @@ using DOAN4.Data;
 using DOAN4.IRepository;
 using DOAN4.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DOAN4.Repository
 {

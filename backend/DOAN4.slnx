@@ -1,3 +1,6 @@
 <Solution>
+  <Project Path="DOAN4.DTO/DOAN4.DTO.csproj" />
+  <Project Path="DOAN4.Data/DOAN4.Data.csproj" />
+  <Project Path="DOAN4.Business/DOAN4.Business.csproj" />
   <Project Path="DOAN4/DOAN4.csproj" />
 </Solution>
