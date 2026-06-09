@@ -114,6 +114,7 @@ namespace DOAN4.Service
                 $"}}";
         }
 
+        // THIẾT KẾ PROMPT (PROMPT ENGINEERING) DÀNH CHO DỮ LIỆU KÉP (BÁN HÀNG + XUẤT KHO)
         private static string BuildDualSourcePrompt(
             string productName,
             List<decimal> salesHistory,
@@ -123,18 +124,22 @@ namespace DOAN4.Service
         {
             var today = DateTime.Today;
 
+            // Chuyển đổi mảng số liệu bán hàng sang chuỗi có gắn thẻ ngày cụ thể (vd: 2026-06-01: 10kg)
+            // Việc gắn ngày này giúp AI có nhận thức về thời gian để bắt được chu kỳ thứ mấy trong tuần (cuối tuần vs giữa tuần)
             var salesPoints = salesHistory.Any()
                 ? salesHistory
                     .Select((qty, i) => $"{today.AddDays(-salesHistory.Count + i + 1):yyyy-MM-dd}:{qty}{unit}")
                     .ToList()
                 : new List<string> { "Không có dữ liệu" };
 
+            // Tương tự, chuyển đổi số liệu xuất kho thực tế
             var exportPoints = exportHistory.Any()
                 ? exportHistory
                     .Select((qty, i) => $"{today.AddDays(-exportHistory.Count + i + 1):yyyy-MM-dd}:{qty}{unit}")
                     .ToList()
                 : new List<string> { "Không có dữ liệu" };
 
+            // Xây dựng prompt chi tiết yêu cầu AI thực hiện phân tích
             return
                 $"Bạn là chuyên gia phân tích chuỗi cung ứng nông sản.\n" +
                 $"Sản phẩm: '{productName}' (đơn vị: {unit}).\n\n" +
@@ -178,6 +183,7 @@ namespace DOAN4.Service
                 client.DefaultRequestHeaders.Remove(ApiKeyHeader);
                 client.DefaultRequestHeaders.Add(ApiKeyHeader, apiKey);
 
+                // Cấu hình request gửi đến Gemini API
                 var requestBody = new
                 {
                     contents = new[]
@@ -190,8 +196,8 @@ namespace DOAN4.Service
                     },
                     generationConfig = new
                     {
-                        responseMimeType = "application/json",
-                        temperature = 0.15  // Gần deterministic — phù hợp bài toán dự báo số liệu
+                        responseMimeType = "application/json", // Bắt buộc mô hình trả về JSON hợp lệ
+                        temperature = 0.15  // Set temperature thấp (0.15) để kết quả mang tính logic, thống nhất (gần deterministic) thay vì sáng tạo
                     }
                 };
 
@@ -264,7 +270,7 @@ namespace DOAN4.Service
                 return null;
             }
 
-            // Làm sạch markdown nếu AI trả về dù đã dặn không cần
+            // Làm sạch chuỗi markdown code block (nếu Gemini tự ý thêm ```json ... ``` dù đã dặn)
             var cleanJson = textNode.Trim();
             if (cleanJson.StartsWith("```"))
                 cleanJson = cleanJson.Replace("```json", "").Replace("```", "").Trim();
@@ -272,7 +278,7 @@ namespace DOAN4.Service
             using var resultDoc = JsonDocument.Parse(cleanJson);
             var root = resultDoc.RootElement;
 
-            // Parse predictedQuantity (bắt buộc)
+            // Kiểm tra và parse thuộc tính bắt buộc 'predictedQuantity' (lượng dự báo)
             if (!root.TryGetProperty("predictedQuantity", out var predProp) ||
                 !predProp.TryGetDecimal(out var predictedQty))
             {
@@ -290,9 +296,11 @@ namespace DOAN4.Service
                 return null;
             }
 
+            // Parse thuộc tính không bắt buộc 'avgPerDay'
             root.TryGetProperty("avgPerDay", out var avgProp);
             avgProp.TryGetDecimal(out var avgPerDay);
 
+            // Kiểm tra số ngày dự báo AI trả về có khớp với số ngày ta yêu cầu không
             if (root.TryGetProperty("forecastDays", out var daysProp) &&
                 daysProp.TryGetInt32(out var returnedDays) &&
                 returnedDays != expectedForecastDays)
@@ -304,6 +312,9 @@ namespace DOAN4.Service
             }
 
            
+            // THỬ NGHIỆM ĐỘ TIN CẬY (Inconsistency Threshold):
+            // So sánh tổng lượng AI dự báo với (Lượng TB ngày * Số ngày dự báo).
+            // Nếu độ lệch vượt quá 20% (InconsistencyThreshold), ghi nhận cảnh báo nhưng vẫn dùng kết quả.
             if (avgPerDay > 0)
             {
                 var expected = avgPerDay * expectedForecastDays;

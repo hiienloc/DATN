@@ -4,6 +4,13 @@ using DOAN4.IService;
 
 namespace DOAN4.Service
 {
+    /// <summary>
+    /// Lớp PackageService quản lý các combo nông sản đóng gói sẵn (Package):
+    /// - CRUD các combo (PackageCode, tên, mô tả, ảnh, giá gốc, giá khuyến mãi).
+    /// - Quản lý liên kết sản phẩm cấu thành combo (PackageItems) và số lượng tương ứng.
+    /// - Tự động tính toán số lượng combo tối đa có thể bán (CalculateMaxAvailable) dựa trên lượng tồn kho thực tế của các sản phẩm lẻ cấu thành.
+    /// - Khóa hoặc mở khóa combo sản phẩm.
+    /// </summary>
     public class PackageService : IPackageService
     {
         private readonly IPackageRepo _packageRepo;

@@ -5,6 +5,13 @@ using DOAN4.Models;
 
 namespace DOAN4.Service
 {
+    /// <summary>
+    /// Lớp CartService quản lý các nghiệp vụ liên quan đến giỏ hàng (Shopping Cart):
+    /// - Lấy thông tin giỏ hàng hiện tại của khách hàng.
+    /// - Thêm combo nông sản (Package) vào giỏ hàng và kiểm tra tính hợp lệ của tồn kho.
+    /// - Cập nhật số lượng mặt hàng trong giỏ, áp dụng giá khuyến mãi (Discount) nếu có.
+    /// - Xóa mặt hàng khỏi giỏ hoặc làm rỗng toàn bộ giỏ hàng.
+    /// </summary>
     public class CartService : ICartService
     {
         private readonly ICartRepo _repo;

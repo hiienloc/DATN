@@ -4,6 +4,13 @@ using DOAN4.IService;
 
 namespace DOAN4.Service
 {
+    /// <summary>
+    /// Lớp StaticService chịu trách nhiệm thu thập số liệu thống kê cho trang quản lý (Dashboard):
+    /// - Lấy dữ liệu tổng quan dashboard (tổng doanh thu, đơn hàng, khách hàng, biểu đồ).
+    /// - Thống kê doanh thu theo ngày, theo tháng và theo năm phục vụ báo cáo.
+    /// - Lấy danh sách các gói combo nông sản bán chạy nhất (TopSellingPackages).
+    /// - Chi tiết hóa doanh thu (RevenueDetails) nhóm theo ngày, tuần, hoặc tháng trong một khoảng thời gian.
+    /// </summary>
     public class StaticService : IStaticService
 
     {

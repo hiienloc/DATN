@@ -6,6 +6,12 @@ using VNPAY.Models.Exceptions;
 
 namespace DOAN4.Service
 {
+    /// <summary>
+    /// Lớp VnpayService chịu trách nhiệm tích hợp trực tiếp với thư viện/cổng thanh toán VNPay:
+    /// - Sinh URL thanh toán VNPay (GenerateVnPayUrl), xử lý mã hóa mã giao dịch (PaymentId) kết hợp OrderId và Unix Timestamp để đảm bảo tính duy nhất khi thanh toán lại.
+    /// - Sử dụng Reflection để thiết lập thuộc tính PaymentId có phạm vi nội bộ (internal setter).
+    /// - Xác thực chữ ký bảo mật Hash HMAC-SHA512 từ callback của VNPay gửi về (ValidateVnPayResponse) để chống giả mạo giao dịch.
+    /// </summary>
     public class VnpayService : IVnpayService
     {
         private readonly IVnpayClient _vnpayClient;

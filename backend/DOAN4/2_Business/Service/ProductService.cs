@@ -4,6 +4,13 @@ using DOAN4.IService;
 
 namespace DOAN4.Service
 {
+    /// <summary>
+    /// Lớp ProductService quản lý các sản phẩm nông sản lẻ trong hệ thống:
+    /// - Lấy danh sách toàn bộ sản phẩm lẻ hoặc thông tin chi tiết một sản phẩm.
+    /// - Thêm sản phẩm mới và kiểm tra ràng buộc duy nhất (không trùng ProductCode hoặc ProductName).
+    /// - Cập nhật thông tin chi tiết sản phẩm nông sản.
+    /// - Khóa hoặc mở khóa hoạt động của sản phẩm nông sản.
+    /// </summary>
     public class ProductService : IProductService
     {
         private readonly IProductRepo _productRepo;

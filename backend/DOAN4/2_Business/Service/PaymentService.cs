@@ -6,6 +6,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace DOAN4.Service
 {
+    /// <summary>
+    /// Lớp PaymentService chịu trách nhiệm xử lý các thanh toán đơn hàng (COD và VNPAY):
+    /// - Tiếp nhận callback từ cổng thanh toán VNPay (HandleVnpayCallback), giải mã mã giao dịch để lấy orderId.
+    /// - Cập nhật trạng thái thanh toán thành công (Paid) và lưu lịch sử giao dịch VNPay.
+    /// - Xử lý thanh toán thất bại: lưu giao dịch lỗi, hoàn lại tồn kho cho đơn hàng bị hủy.
+    /// - Quản lý thanh toán khi nhận hàng (COD): khởi tạo ở trạng thái Pending, cập nhật sang Paid sau khi shipper xác nhận giao hàng và thu tiền.
+    /// </summary>
     public class PaymentService : IPaymentService
     {
         private readonly IPaymentRepo _repo;

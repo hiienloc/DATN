@@ -4,6 +4,12 @@ using DOAN4.IService;
 
 namespace DOAN4.Service
 {
+    /// <summary>
+    /// Lớp CategoryService quản lý các danh mục nông sản (Category) trong hệ thống:
+    /// - Lấy danh sách tất cả danh mục hoặc lấy thông tin chi tiết một danh mục.
+    /// - Thêm mới, cập nhật tên và trạng thái hoạt động của danh mục.
+    /// - Khóa hoặc mở khóa danh mục sản phẩm (LockCategory).
+    /// </summary>
     public class CategoryService : ICategoryService  
     {
         private readonly ICategoryRepo _categoryRepo;  

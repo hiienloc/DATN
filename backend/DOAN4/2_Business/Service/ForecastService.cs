@@ -132,8 +132,12 @@ namespace DOAN4.Service
             forecast.Product = product;
             return MapToResponseDto(forecast);
         }
+        // Hàm cốt lõi xây dựng thông tin dự báo cho sản phẩm
         private async Task<DOAN4.Models.Forecast> BuildForecastAsync(Product product, DateTime today)
         {
+            // BƯỚC 1: LẤY LỊCH SỬ TIÊU THỤ VÀ XUẤT KHO TRONG 30 NGÀY GẦN NHẤT
+            // - salesHistory: Lượng bán thực tế cho khách hàng từ các đơn hàng đã 'Hoàn thành'
+            // - exportHistory: Lượng xuất kho thực tế (bao gồm cả hao hụt, hỏng hóc, combo quà tặng...)
             var salesHistory = await _forecastRepository.GetProductConsumptionHistoryAsync(product.ProductId, 30);
             var exportHistory = await _forecastRepository.GetProductExportHistoryAsync(product.ProductId, 30);
 
@@ -145,13 +149,21 @@ namespace DOAN4.Service
                     product.ProductName);
             }
 
+            // Tính số lượng trung bình tiêu thụ mỗi ngày của 30 ngày qua
             decimal avgSales = salesHistory.Any() ? salesHistory.Average() : 0;
             decimal avgExports = exportHistory.Any() ? exportHistory.Average() : 0;
 
-            // Đếm số ngày có phát sinh giao dịch trong 30 ngày qua (số ngày lượng bán/xuất > 0)
+            // BƯỚC 2: XÁC ĐỊNH CHU KỲ DỰ BÁO (3, 5, hoặc 7 ngày) DỰA TRÊN TẦN SUẤT GIAO DỊCH
+            // - Đếm số ngày có phát sinh giao dịch (> 0) trong 30 ngày qua
             int activeSalesDays = salesHistory.Count(q => q > 0);
             int activeExportDays = exportHistory.Count(q => q > 0);
+            // - Lấy tần suất hoạt động lớn nhất làm đại diện
             int maxFrequency = Math.Max(activeSalesDays, activeExportDays);
+            
+            // - Phân loại chu kỳ dự báo:
+            //   + Bán rất chạy (tần suất >= 20 ngày): Dự báo ngắn hạn 3 ngày (xoay vòng kho nhanh, tránh hỏng nông sản)
+            //   + Bán vừa (tần suất >= 10 ngày): Dự báo trung hạn 5 ngày
+            //   + Bán chậm/mới bán (tần suất < 10 ngày): Dự báo dài hạn 7 ngày (nhập định kỳ hàng tuần để tiết kiệm chi phí vận hành)
             int forecastDays = maxFrequency switch
             {
                 >= 20 => 3,
@@ -161,18 +173,21 @@ namespace DOAN4.Service
 
             string unit = product.Unit ?? DefaultUnit;
 
-            // Gọi Gemini AI dự báo
+            // BƯỚC 3: GỌI GEMINI AI ĐỂ DỰ BÁO NHU CẦU TIÊU THỤ TRONG N NGÀY TỚI
+            // Truyền tên sản phẩm, lịch sử bán, lịch sử xuất kho, đơn vị tính và số ngày cần dự báo
             decimal predictedQty = await _geminiService.ForecastQuantityWithWarehouseAsync(
                 product.ProductName, salesHistory, exportHistory, unit, forecastDays);
 
-            // Fallback khi AI thất bại
+            // BƯỚC 4: CƠ CHẾ DỰ PHÒNG (FALLBACK) KHI AI THẤT BẠI
+            // Nếu AI gặp lỗi (mất mạng, hết quota API) hoặc trả về lượng dự báo <= 0:
             if (predictedQty <= 0)
             {
+                // Chọn giá trị trung bình ngày lớn nhất giữa bán và xuất kho
                 decimal baseAvg = Math.Max(avgSales, avgExports);
 
                 if (baseAvg <= 0)
                 {
-                    // Không có dữ liệu fallback — không thể gợi ý nhập hàng
+                    // Hoàn toàn không có dữ liệu lịch sử tiêu dùng nào
                     _logger.LogWarning(
                         "Sản phẩm '{ProductName}': AI thất bại và không có dữ liệu lịch sử để fallback. " +
                         "predictedQty = 0.",
@@ -180,6 +195,7 @@ namespace DOAN4.Service
                 }
                 else
                 {
+                    // Công thức fallback: Lượng TB ngày * Hệ số tăng trưởng 1.1 (tăng 10% an toàn) * Số ngày dự báo
                     predictedQty = baseAvg * 1.1m * forecastDays;
                     _logger.LogWarning(
                         "Dùng fallback cho '{ProductName}': " +
@@ -189,12 +205,16 @@ namespace DOAN4.Service
                 }
             }
 
+            // BƯỚC 5: TÍNH TOÁN LƯỢNG ĐỀ XUẤT NHẬP HÀNG (SUGGEST RESTOCK)
+            // Lấy lượng hàng tồn kho thực tế hiện tại
             var inventory = await _inventoryRepo.GetByProductIdAsync(product.ProductId);
             decimal currentStock = inventory?.QtyInStock ?? 0;
 
-            
+            // - Tồn kho an toàn (Safety Stock): Chiếm 20% lượng tiêu dùng dự báo để dự phòng trễ hàng/tăng nhu cầu đột xuất
             decimal safetyStock = predictedQty * 0.2m;
+            // - Tồn kho mục tiêu (Target Stock): Lượng tiêu dùng dự báo + lượng an toàn
             decimal targetStock = predictedQty + safetyStock;
+            // - Lượng gợi ý nhập thêm = Tồn kho mục tiêu - Tồn kho hiện tại (Nếu tồn kho hiện tại nhiều hơn mục tiêu thì trả về 0)
             decimal suggestStock = predictedQty > 0
                 ? Math.Max(0, targetStock - currentStock)
                 : 0;

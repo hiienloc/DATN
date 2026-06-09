@@ -5,6 +5,13 @@ using DOAN4.Models;
 
 namespace DOAN4.Service
 {
+    /// <summary>
+    /// Lớp InventoryService quản lý toàn bộ kho hàng và hoạt động xuất nhập kho:
+    /// - Xem danh sách tồn kho của tất cả sản phẩm nông sản lẻ.
+    /// - Nhập thêm nông sản vào kho (ImportInventory), thiết lập ngưỡng báo động tồn kho tối thiểu (MinStock).
+    /// - Cập nhật thủ công số lượng tồn kho và thông tin kho hàng.
+    /// - Truy vấn lịch sử các giao dịch kho (InventoryTransactions) như IMPORT/EXPORT.
+    /// </summary>
     public class InventoryService : IInventoryService
     {
         private readonly IInventoryRepo _repo;

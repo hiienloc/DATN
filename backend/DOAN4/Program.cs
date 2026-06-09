@@ -10,7 +10,7 @@ using System.Text;
 using VNPAY.Extensions;
 
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions { WebRootPath = "1_Presentation/wwwroot", Args = args });
 
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>

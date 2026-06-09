@@ -2,6 +2,12 @@ using DOAN4.IService;
 
 namespace DOAN4.Service
 {
+    /// <summary>
+    /// Lớp StorageService quản lý hoạt động lưu trữ tập tin hình ảnh sản phẩm/combo lên Web Server:
+    /// - Nhận file hình ảnh tải lên từ client (IFormFile).
+    /// - Tạo tên file duy nhất bằng Guid để tránh ghi đè và lưu vào thư mục 'Uploads' trên server.
+    /// - Trả về đường dẫn ảnh tương đối dạng '/images/filename' để lưu vào cơ sở dữ liệu.
+    /// </summary>
     public class StorageService : IStorageService
     {
         private readonly IWebHostEnvironment _env;

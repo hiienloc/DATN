@@ -6,6 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DOAN4.Service
 {
+    /// <summary>
+    /// Lớp OrderService chịu trách nhiệm xử lý các nghiệp vụ liên quan đến đơn hàng (Orders):
+    /// - Đặt hàng mới (CreateOrder): trừ số lượng combo, trừ kho lẻ của từng sản phẩm trong combo,
+    ///   tính tổng tiền (bao gồm phí ship), khởi tạo trạng thái thanh toán và chạy trong database transaction.
+    /// - Hủy đơn hàng (CancelOrder) và cập nhật trạng thái đơn hàng (UpdateOrderStatus).
+    /// - Hoàn lại kho (RestoreInventory) số lượng combo và nông sản lẻ nếu đơn hàng bị hủy.
+    /// - Xem danh sách đơn hàng toàn hệ thống hoặc theo khách hàng cụ thể.
+    /// </summary>
     public class OrderService : IOrderService
     {
         private readonly IOrderRepo _orderRepo;

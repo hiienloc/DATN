@@ -11,7 +11,13 @@ using static DOAN4.Dto.AuthDto;
 
 namespace DOAN4.Service
 {
- 
+    /// <summary>
+    /// Lớp AuthService chịu trách nhiệm xử lý các nghiệp vụ liên quan đến xác thực và phân quyền người dùng:
+    /// - Đăng ký khách hàng mới (Register) và băm mật khẩu bằng SHA-256 để bảo mật.
+    /// - Đăng nhập (Authenticate), kiểm tra tài khoản hoạt động và cấp mã JWT Token.
+    /// - Quản lý khóa/mở khóa tài khoản khách hàng.
+    /// - Quản lý thông tin cá nhân và thay đổi mật khẩu của người dùng.
+    /// </summary>
     public class AuthService : IAuthService
     {
         
