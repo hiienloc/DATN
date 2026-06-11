@@ -2,12 +2,14 @@ using DOAN4.Dto;
 using DOAN4.IService;
 using DOAN4.Models;
 using DOAN4.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace DOAN4.Controllers
@@ -33,11 +35,16 @@ namespace DOAN4.Controllers
             _configuration = configuration;
         }
 
+        [Authorize(Roles = "Customer")]
         [HttpPost("create-payment")]
         public async Task<IActionResult> CreatePayment([FromBody] OrderDto.CreateOrderDto dto)
         {
             try
             {
+                // Force user ownership on order creation
+                var userId = GetUserIdFromToken();
+                dto.UserId = userId;
+
                 var order = await _orderService.CreateOrderAsync(dto);
 
                 if (string.Equals(dto.PaymentMethod, "VNPay", StringComparison.OrdinalIgnoreCase))
@@ -60,6 +67,7 @@ namespace DOAN4.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("cod-confirm/{orderId}")]
         public async Task<IActionResult> ConfirmCodPayment(int orderId)
         {
@@ -93,6 +101,7 @@ namespace DOAN4.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("payment-status/{orderId}")]
         public async Task<IActionResult> GetPaymentStatus(int orderId)
         {
@@ -101,6 +110,17 @@ namespace DOAN4.Controllers
                 var payment = await _paymentService.GetPaymentByOrderIdAsync(orderId);
                 if (payment == null)
                     return NotFound(new { message = "Payment not found" });
+
+                // Check ownership to prevent IDOR
+                var order = await _orderService.GetOrderByIdAsync(orderId);
+                if (order == null)
+                    return NotFound(new { message = "Order not found" });
+
+                var loggedInUserId = GetUserIdFromToken();
+                if (User.IsInRole("Customer") && order.UserId != loggedInUserId)
+                {
+                    return Forbid();
+                }
                
                 return Ok(new OrderDto.PaymentResponseDto
                 {
@@ -126,6 +146,14 @@ namespace DOAN4.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+        private int GetUserIdFromToken()
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                throw new UnauthorizedAccessException("Không tìm thấy thông tin người dùng trong token.");
+            return int.Parse(userIdClaim.Value);
         }
     }
 }

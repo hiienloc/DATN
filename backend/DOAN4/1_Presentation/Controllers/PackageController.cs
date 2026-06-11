@@ -42,6 +42,7 @@ namespace DOAN4.Controllers
         }
 
         // POST /api/package/upload-image
+        [Authorize(Roles = "Admin")]
         [HttpPost("upload-image")]
         public async Task<IActionResult> UploadImage(IFormFile image)
         {
@@ -60,6 +61,7 @@ namespace DOAN4.Controllers
         }
 
         // POST /api/package/add
+        [Authorize(Roles = "Admin")]
         [HttpPost("add")]
         public async Task<IActionResult> AddPackage([FromBody] PackageDto.CreatePackageDto packageDto)
         {
@@ -79,6 +81,7 @@ namespace DOAN4.Controllers
         }
 
         // PUT /api/package/update
+        [Authorize(Roles = "Admin")]
         [HttpPut("update")]
         public async Task<IActionResult> UpdatePackage([FromBody] PackageDto.UpdatePackageDto packageDto)
         {
@@ -98,6 +101,7 @@ namespace DOAN4.Controllers
         }
 
         // PUT /api/package/lock/5
+        [Authorize(Roles = "Admin")]
         [HttpPut("lock/{id}")]
         public async Task<IActionResult> LockPackage(int id)
         {

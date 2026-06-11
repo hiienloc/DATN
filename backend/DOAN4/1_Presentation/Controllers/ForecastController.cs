@@ -1,5 +1,6 @@
 using DOAN4.Dto;
 using DOAN4.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace DOAN4.Controllers
 {
     [Route("api/ForecastResult")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class ForecastController : ControllerBase
     {
         private readonly IForecastService _forecastService;

@@ -1,10 +1,12 @@
 using DOAN4.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DOAN4.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class StaticController : ControllerBase  // ✅ đổi Static → Statistic
     {
         private readonly IStaticService _statisticService;  // ✅ đổi tên cho đúng
