@@ -115,10 +115,6 @@ namespace DOAN4.Service
             await _repo.SaveChangesAsync();
         }
 
-        public async Task<OrderDto.CreateOrderDto> CheckoutAsync(int userId)
-        {
-            throw new NotImplementedException();
-        }
 
         
         private static void CheckInventory(Models.Package package, int requestedQty)

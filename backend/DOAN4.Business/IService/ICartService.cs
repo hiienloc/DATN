@@ -9,6 +9,5 @@ namespace DOAN4.IService
         Task UpdateCartAsync(int userId, CartDto.UpdateQuantityDto dto);
         Task RemoveFromCartAsync(int cartItemId);
         Task ClearCartAsync(int userId);
-        Task<OrderDto.CreateOrderDto> CheckoutAsync(int userId);
     }
 }
