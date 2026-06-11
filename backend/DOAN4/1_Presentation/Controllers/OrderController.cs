@@ -81,8 +81,15 @@ namespace DOAN4.Controllers
         {
             try
             {
+                var loggedInUserId = GetUserIdFromToken();
                 var order = await _orderService.GetOrderByIdAsync(id);
                 if (order == null) return NotFound();
+
+                if (User.IsInRole("Customer") && order.UserId != loggedInUserId)
+                {
+                    return Forbid();
+                }
+
                 return Ok(order);
             }
             catch (UnauthorizedAccessException ex)
@@ -113,9 +120,17 @@ namespace DOAN4.Controllers
         {
             try
             {
-                var order = await _orderService.CancelOrderAsync(id);
+                var loggedInUserId = GetUserIdFromToken();
+                var order = await _orderService.GetOrderByIdAsync(id);
                 if (order == null) return NotFound();
-                return Ok(order);
+
+                if (order.UserId != loggedInUserId)
+                {
+                    return Forbid();
+                }
+
+                var cancelledOrder = await _orderService.CancelOrderAsync(id);
+                return Ok(cancelledOrder);
             }
             catch (UnauthorizedAccessException ex)
             {
