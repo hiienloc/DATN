@@ -12,7 +12,7 @@ namespace DOAN4.Dto
             public string Email { get; set; }
 
             [Required(ErrorMessage = "Mật khẩu không được để trống")]
-            [StringLength(100, MinimumLength = 6, ErrorMessage = "Mật khẩu phải từ 6-100 ký tự")]
+            [StringLength(100, MinimumLength = 8, ErrorMessage = "Mật khẩu phải từ 6-100 ký tự")]
             public string Password { get; set; }
 
             [Required(ErrorMessage = "Họ tên không được để trống")]

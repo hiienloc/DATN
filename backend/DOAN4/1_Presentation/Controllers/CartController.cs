@@ -53,6 +53,10 @@ namespace DOAN4.Controllers
             {
                 return NotFound(new { Message = ex.Message });
             }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
 
         // PUT api/Cart/update
@@ -72,6 +76,14 @@ namespace DOAN4.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { Message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
             }
         }
 

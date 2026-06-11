@@ -83,16 +83,30 @@ namespace DOAN4.Repository
             return result;
         }
 
-        // Lịch sử xuất kho thực tế (bao gồm hao hụt, combo, nội bộ)
+        // Lịch sử xuất kho thực tế — chỉ tính EXPORT gắn với đơn hoàn thành
         public async Task<List<decimal>> GetProductExportHistoryAsync(int productId, int days)
         {
             var startDate = DateTime.Today.AddDays(-days);
             var today = DateTime.Today;
 
+            // Lấy các PackageId thuộc đơn hoàn thành trong khoảng thời gian
+            var completedPackageIds = await (
+                from oi in _context.OrderItems
+                join o in _context.Orders on oi.OrderId equals o.OrderId
+                join p in _context.Payments on o.OrderId equals p.OrderId into payments
+                from pay in payments.DefaultIfEmpty()
+                where o.OrderDate >= startDate
+                   && (o.OrderStatus == "Hoàn thành"
+                       || (pay != null && (pay.PaymentStatus == "Paid" || pay.PaymentStatus == "Đã thanh toán")))
+                select oi.PackageId
+            ).Distinct().ToListAsync();
+
             var dbData = await _context.InventoryTransactions
                 .Where(it => it.Inventory.ProductId == productId
                           && it.TransactionDate >= startDate
-                          && (it.TransactionType == "EXPORT" || it.QuantityChange < 0))
+                          && it.TransactionType == "EXPORT"
+                          && it.PackageId != null
+                          && completedPackageIds.Contains(it.PackageId.Value))
                 .GroupBy(it => it.TransactionDate.Date)
                 .Select(g => new {
                     Date = g.Key,
