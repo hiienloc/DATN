@@ -112,6 +112,22 @@ namespace DOAN4.Controllers
             {
                 return Unauthorized(new { Message = ex.Message });
             }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
 
         [Authorize(Roles = "Customer")]
@@ -136,6 +152,18 @@ namespace DOAN4.Controllers
             {
                 return Unauthorized(new { Message = ex.Message });
             }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
 
         [Authorize(Roles = "Customer")]
@@ -154,6 +182,18 @@ namespace DOAN4.Controllers
             catch (UnauthorizedAccessException ex)
             {
                 return Unauthorized(new { Message = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
             }
         }
 

@@ -52,10 +52,7 @@ namespace DOAN4.Service
             }
 
             // 4. Tính giá
-            bool isPromoActive = package.Discount > 0
-                && package.StartDate <= DateTime.Now
-                && DateTime.Now <= package.EndDate;
-            decimal finalPrice = isPromoActive ? package.Discount : package.Price;
+            decimal finalPrice = package.GetCurrentPrice();
 
             // 5. Update hoặc thêm mới item
             if (existingItem != null)
@@ -190,10 +187,7 @@ namespace DOAN4.Service
             decimal displayPrice = item.CartPrice;
             if (item.Package != null)
             {
-                bool isPromoActive = item.Package.Discount > 0
-                    && item.Package.StartDate <= DateTime.Now
-                    && DateTime.Now <= item.Package.EndDate;
-                displayPrice = isPromoActive ? item.Package.Discount : item.Package.Price;
+                displayPrice = item.Package.GetCurrentPrice();
             }
 
             return new CartDto.CartItemDto

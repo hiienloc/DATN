@@ -126,7 +126,26 @@ namespace DOAN4.Repository
 
         public async Task SaveForecastAsync(Forecast forecast)
         {
-            await _context.Forecasts.AddAsync(forecast);
+            // Kiểm tra trùng lặp dựa trên ProductId và ngày dự báo (ForecastDate)
+            var existing = await _context.Forecasts
+                .FirstOrDefaultAsync(f => f.ProductId == forecast.ProductId && f.ForecastDate.Date == forecast.ForecastDate.Date);
+
+            if (existing != null)
+            {
+                // Cập nhật thông tin dự báo mới đè lên bản ghi cũ
+                existing.ForecastType = forecast.ForecastType;
+                existing.AvgDailySales = forecast.AvgDailySales;
+                existing.PredictQuantity = forecast.PredictQuantity;
+                existing.CurrentStock = forecast.CurrentStock;
+                existing.SuggestReStock = forecast.SuggestReStock;
+                existing.GeneratedAt = forecast.GeneratedAt;
+                _context.Forecasts.Update(existing);
+            }
+            else
+            {
+                await _context.Forecasts.AddAsync(forecast);
+            }
+
             await _context.SaveChangesAsync();
         }
 

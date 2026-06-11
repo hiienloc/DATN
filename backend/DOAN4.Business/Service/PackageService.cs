@@ -183,4 +183,15 @@ namespace DOAN4.Service
             return finalMax < 0 ? 0 : finalMax;
         }
     }
+
+    public static class PackageExtensions
+    {
+        public static decimal GetCurrentPrice(this Models.Package package)
+        {
+            bool isPromoActive = package.Discount > 0
+                && package.StartDate <= DateTime.Now
+                && DateTime.Now <= package.EndDate;
+            return isPromoActive ? package.Discount : package.Price;
+        }
+    }
 }

@@ -43,7 +43,7 @@ namespace DOAN4.Service
                     Items = new List<OrderItem>()
                 };
 
-                decimal totalAmount = newOrder.ShipmentPrice;
+                decimal itemsTotal = 0;
 
                 foreach (var itemDto in orderDto.OrderItems)
                 {
@@ -66,7 +66,13 @@ namespace DOAN4.Service
                             }
 
                             var requiredQty = pkgItem.PackageQty * itemDto.Quantity;
-                            var inventory = await _inventoryRepo.GetByProductIdAsync(pkgItem.ProductId);
+                            
+                            // Tối ưu hóa: Dùng Eager Loading đã bao gồm trong GetPackageAsync để tránh N+1 Queries
+                            var inventory = pkgItem.Product?.Inventory;
+                            if (inventory == null)
+                            {
+                                inventory = await _inventoryRepo.GetByProductIdAsync(pkgItem.ProductId);
+                            }
 
                             if (inventory == null)
                                 throw new Exception($"Sản phẩm '{pkgItem.Product?.ProductName}' chưa được cấu hình kho!");
@@ -92,12 +98,13 @@ namespace DOAN4.Service
                     // 3. Cập nhật số lượng combo
                     package.MaxQuantity -= itemDto.Quantity;
 
-                    // 4. Tính giá
-                    bool isPromoActive = package.Discount > 0
-                        && package.StartDate <= DateTime.Now
-                        && DateTime.Now <= package.EndDate;
+                    // 4. Tính giá & kiểm tra tính không nhất quán của khuyến mãi
+                    decimal finalPrice = package.GetCurrentPrice();
 
-                    decimal finalPrice = isPromoActive ? package.Discount : package.Price;
+                    if (itemDto.UnitPrice != finalPrice)
+                    {
+                        throw new InvalidOperationException($"Giá của combo '{package.PackageName}' đã có sự thay đổi. Vui lòng làm mới giỏ hàng.");
+                    }
 
                     newOrder.Items.Add(new OrderItem
                     {
@@ -106,17 +113,17 @@ namespace DOAN4.Service
                         OrderPrice = finalPrice
                     });
 
-                    totalAmount += finalPrice * itemDto.Quantity;
+                    itemsTotal += finalPrice * itemDto.Quantity;
                 }
 
-                newOrder.TotalAmount = totalAmount;
+                newOrder.TotalAmount = itemsTotal + newOrder.ShipmentPrice;
 
                 // 5. Khởi tạo Payment
                 newOrder.Payment = new Payment
                 {
                     PaymentMethod = orderDto.PaymentMethod,
                     PaymentStatus = "Pending",
-                    Amount = totalAmount,
+                    Amount = newOrder.TotalAmount,
                     CreatedAt = DateTime.Now
                 };
 
@@ -196,12 +203,50 @@ namespace DOAN4.Service
                 ?? throw new KeyNotFoundException("Không tìm thấy đơn hàng.");
 
             var cleanStatus = status?.Trim();
+            
+            // Chuẩn hóa trạng thái từ Tiếng Anh sang Tiếng Việt
+            var targetStatus = cleanStatus;
+            if (string.Equals(targetStatus, "cancelled", StringComparison.OrdinalIgnoreCase))
+                targetStatus = "Đã hủy";
+            else if (string.Equals(targetStatus, "completed", StringComparison.OrdinalIgnoreCase))
+                targetStatus = "Hoàn thành";
+            else if (string.Equals(targetStatus, "pending", StringComparison.OrdinalIgnoreCase))
+                targetStatus = "Chờ xác nhận";
+
+            var currentStatus = order.OrderStatus?.Trim();
+
+            // Nếu trạng thái đích trùng với trạng thái hiện tại thì trả về luôn
+            if (string.Equals(currentStatus, targetStatus, StringComparison.OrdinalIgnoreCase))
+            {
+                return MapToResponseDto(order);
+            }
+
+            // Một khi đơn hàng đã Hoàn thành hoặc Đã hủy thì không thể thay đổi trạng thái
+            if (string.Equals(currentStatus, "Hoàn thành", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException("Đơn hàng đã ở trạng thái 'Hoàn thành', không thể thay đổi trạng thái.");
+            }
+            if (string.Equals(currentStatus, "Đã hủy", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException("Đơn hàng đã bị 'Hủy', không thể thay đổi trạng thái.");
+            }
+
+            // Chỉ cho phép chuyển từ "Chờ xác nhận" sang "Hoàn thành" hoặc "Đã hủy"
+            if (!string.Equals(currentStatus, "Chờ xác nhận", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException($"Không thể chuyển trạng thái từ '{currentStatus}' sang '{targetStatus}'.");
+            }
+
+            if (!string.Equals(targetStatus, "Hoàn thành", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(targetStatus, "Đã hủy", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException($"Trạng thái mục tiêu '{status}' không hợp lệ.");
+            }
 
             using var transaction = await _orderRepo.BeginTransactionAsync();
             try
             {
-                if (string.Equals(cleanStatus, "Đã hủy", StringComparison.OrdinalIgnoreCase) || 
-                    string.Equals(cleanStatus, "cancelled", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(targetStatus, "Đã hủy", StringComparison.OrdinalIgnoreCase))
                 {
                     await RestoreInventoryAsync(order);
                     if (order.Payment != null)
@@ -210,8 +255,7 @@ namespace DOAN4.Service
                         order.Payment.UpdatedAt = DateTime.Now;
                     }
                 }
-                else if (string.Equals(cleanStatus, "Hoàn thành", StringComparison.OrdinalIgnoreCase) || 
-                         string.Equals(cleanStatus, "completed", StringComparison.OrdinalIgnoreCase))
+                else if (string.Equals(targetStatus, "Hoàn thành", StringComparison.OrdinalIgnoreCase))
                 {
                     if (order.Payment != null)
                     {
@@ -220,7 +264,7 @@ namespace DOAN4.Service
                     }
                 }
 
-                order.OrderStatus = status;
+                order.OrderStatus = targetStatus;
 
                 await _orderRepo.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -275,6 +319,9 @@ namespace DOAN4.Service
             {
                 return;
             }
+
+            // Đánh dấu trạng thái ngay lập tức ở bộ nhớ để ngăn chặn các lời gọi đồng thời làm cộng tồn kho nhiều lần
+            order.OrderStatus = "Đã hủy";
 
             foreach (var item in order.Items)
             {
