@@ -48,40 +48,53 @@ namespace DOAN4.Service
             string payDate = data.GetValueOrDefault("vnp_PayDate", "");
             string txnRef = data.GetValueOrDefault("vnp_TxnRef", "");
 
-            int orderId = 0;
-            if (!string.IsNullOrEmpty(txnRef))
+            if (!int.TryParse(txnRef, out int transactionId))
             {
-                if (txnRef.Contains('_'))
-                {
-                    // Hỗ trợ format cũ "orderId_ticks"
-                    int.TryParse(txnRef.Split('_')[0], out orderId);
-                }
-                else if (long.TryParse(txnRef, out long parsedPaymentId))
-                {
-                    // Hỗ trợ format mới: orderId * 10,000,000,000 + timestamp
-                    // Chia nguyên cho 10,000,000,000 để tách lấy orderId
-                    long candidateOrderId = parsedPaymentId / 10000000000L;
-                    if (candidateOrderId > 0 && candidateOrderId < 1000000)
-                    {
-                        orderId = (int)candidateOrderId;
-                    }
-                }
+                _logger.LogWarning("[Callback] Không thể parse txnRef làm transactionId. txnRef={TxnRef}", txnRef);
+                return new OrderDto.VnpayCallbackResult { IsSuccess = false };
             }
 
-            // ResponseCode = "00" là thành công, còn lại là thất bại
+            var transaction = await _repo.GetTransactionByIdAsync(transactionId);
+            if (transaction == null)
+            {
+                _logger.LogWarning("[Callback] Không tìm thấy transaction với ID: {TxnId}", transactionId);
+                return new OrderDto.VnpayCallbackResult { IsSuccess = false };
+            }
+
+            int orderId = transaction.Payment.OrderId;
+            string paymentMethod = DetectPaymentMethod(bankCode);
+
+            // Cập nhật thông tin giao dịch
+            transaction.VnpayTxnRef = txnRef;
+            transaction.TransactionNo = transactionNo;
+            transaction.BankCode = bankCode;
+            transaction.ResponseCode = responseCode;
+            transaction.TransactionDate = DateTime.Now;
+
             if (responseCode == "00")
             {
-                await UpdatePaymentSuccessAsync(orderId, transactionNo, responseCode, bankCode, payDate, txnRef);
+                transaction.Status = "Success";
+                await _repo.UpdatePaymentStatusAsync(orderId, "Paid", paymentMethod, DateTime.Now);
+                await _repo.SaveChangesAsync();
+
+                _logger.LogInformation("[PaymentSuccess] OrderId={Id}, Method={Method}, TransactionId={TxnId}", orderId, paymentMethod, transactionId);
                 return new OrderDto.VnpayCallbackResult { IsSuccess = true, OrderId = orderId };
             }
-
-            await UpdatePaymentFailedAsync(orderId, responseCode, bankCode);
-            return new OrderDto.VnpayCallbackResult
+            else
             {
-                IsSuccess = false,
-                OrderId = orderId,
-                ResponseCode = responseCode
-            };
+                transaction.Status = "Failed";
+                await _repo.RestoreStockAsync(orderId);
+                await _repo.UpdatePaymentStatusAsync(orderId, "Failed", transaction.Payment.PaymentMethod, DateTime.Now);
+                await _repo.SaveChangesAsync();
+
+                _logger.LogInformation("[PaymentFailed] OrderId={Id}, Code={Code}, TransactionId={TxnId}", orderId, responseCode, transactionId);
+                return new OrderDto.VnpayCallbackResult
+                {
+                    IsSuccess = false,
+                    OrderId = orderId,
+                    ResponseCode = responseCode
+                };
+            }
         }
 
 
@@ -231,6 +244,22 @@ namespace DOAN4.Service
             "INTCARD" => "Thẻ quốc tế",
             _ => bankCode  // trường hợp khác giữ nguyên bankCode
         };
+
+        public async Task<PaymentTransaction> CreatePendingTransactionAsync(int orderId)
+        {
+            var payment = await _repo.GetPaymentByOrderIdAsync(orderId)
+                ?? throw new KeyNotFoundException($"Không tìm thấy Payment cho đơn hàng: {orderId}");
+
+            var transaction = new PaymentTransaction
+            {
+                PaymentId = payment.PaymentId,
+                Status = "Pending",
+                TransactionDate = DateTime.Now
+            };
+
+            await _repo.AddTransactionAsync(transaction);
+            return transaction;
+        }
 
     } 
 }

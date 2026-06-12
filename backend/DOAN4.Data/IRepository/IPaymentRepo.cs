@@ -6,6 +6,8 @@ namespace DOAN4.IRepository
         Task CreatePaymentAsync(Payment payment);
         Task UpdatePaymentStatusAsync(int orderId, string status, string paymentMethod, DateTime updatedAt);
         Task AddTransactionAsync(PaymentTransaction transaction);
-        Task RestoreStockAsync(int orderId); 
+        Task<PaymentTransaction?> GetTransactionByIdAsync(int transactionId);
+        Task RestoreStockAsync(int orderId);
+        Task SaveChangesAsync();
     }
 }

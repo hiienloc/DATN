@@ -128,5 +128,17 @@ namespace DOAN4.Repository
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<PaymentTransaction?> GetTransactionByIdAsync(int transactionId)
+        {
+            return await _context.PaymentTransactions
+                .Include(t => t.Payment)
+                .FirstOrDefaultAsync(t => t.TransactionId == transactionId);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }

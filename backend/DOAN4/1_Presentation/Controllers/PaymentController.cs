@@ -49,9 +49,10 @@ namespace DOAN4.Controllers
 
                 if (string.Equals(dto.PaymentMethod, "VNPay", StringComparison.OrdinalIgnoreCase))
                 {
+                    var transaction = await _paymentService.CreatePendingTransactionAsync(order.OrderId);
                     string vnpayUrl = _vnPayService.GenerateVnPayUrl(
                         HttpContext,
-                        order.OrderId,
+                        transaction.TransactionId,
                         order.TotalAmount,
                         $"Thanh toan don hang {order.OrderCode}"
                     );

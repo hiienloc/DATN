@@ -12,5 +12,6 @@ namespace DOAN4.IService
         Task CreateCodPaymentAsync(int orderId, decimal amount);
         Task UpdateCodPaidAsync(int orderId);
         Task<Payment?> GetPaymentByOrderIdAsync(int orderId);
+        Task<PaymentTransaction> CreatePendingTransactionAsync(int orderId);
     }
 }

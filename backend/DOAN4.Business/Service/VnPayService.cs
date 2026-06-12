@@ -25,7 +25,7 @@ namespace DOAN4.Service
 
        
         public string GenerateVnPayUrl(
-            HttpContext context, int orderId, decimal amount, string orderInfo)
+            HttpContext context, long txnRefId, decimal amount, string orderInfo)
         {
             var request = new VnpayPaymentRequest
             {
@@ -35,21 +35,17 @@ namespace DOAN4.Service
                 Language = DisplayLanguage.Vietnamese
             };
 
-            
-            long unixTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            long encodedPaymentId = ((long)orderId * 10000000000L) + (unixTimestamp % 10000000000L);
-
             // Gán PaymentId qua Reflection vì setter được định nghĩa là internal
             var prop = typeof(VnpayPaymentRequest).GetProperty("PaymentId");
             if (prop != null)
             {
-                prop.SetValue(request, encodedPaymentId);
+                prop.SetValue(request, txnRefId);
             }
 
             var paymentUrlInfo = _vnpayClient.CreatePaymentUrl(request);
 
             _logger.LogInformation(
-                "[VnpayService] Tạo URL thành công. OrderId={Id}, EncodedPaymentId={EncodedId}", orderId, encodedPaymentId);
+                "[VnpayService] Tạo URL thành công. TransactionId={TxnRefId}", txnRefId);
 
             return paymentUrlInfo.Url;
         }
