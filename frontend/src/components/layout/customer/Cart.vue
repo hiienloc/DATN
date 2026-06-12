@@ -153,7 +153,8 @@ const submitOrder = async () => {
       shipmentPrice: SHIPPING_FEE,
       orderItems: cartItems.value.map(item => ({
         packageId: item.packageId,
-        quantity: item.quantity
+        quantity: item.quantity,
+        unitPrice: item.price
       }))
     }
 
