@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "node -e \"require('fs').rmSync('C:/Users/locth/source/repos/DOAN4/DOAN4/wwwroot/assets', { recursive: true, force: true })\" && vite build",
-    "build:local": "node -e \"require('fs').rmSync('C:/Users/locth/source/repos/DOAN4/DOAN4/wwwroot/assets', { recursive: true, force: true })\" && vite build --mode development",
-    "build:prod": "node -e \"require('fs').rmSync('C:/Users/locth/source/repos/DOAN4/DOAN4/wwwroot/assets', { recursive: true, force: true })\" && vite build --mode production",
+    "build": "vite build",
+    "build:local": "vite build --mode development",
+    "build:prod": "vite build --mode production",
     "preview": "vite preview"
   },
   "dependencies": {

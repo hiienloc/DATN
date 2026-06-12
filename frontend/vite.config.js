@@ -11,8 +11,8 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: 'C:/Users/locth/source/repos/DOAN4/DOAN4/wwwroot',
-    emptyOutDir: false,
+    outDir: '../backend/DOAN4/1_Presentation/wwwroot',
+    emptyOutDir: true,
   },
   server: {
     proxy: {
